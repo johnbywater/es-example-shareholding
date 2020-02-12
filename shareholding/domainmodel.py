@@ -46,7 +46,6 @@ class Company(AggregateRoot):
             price_paid_per_share=price_paid_per_share,
             currency=currency,
             allotted_on=allotted_on,
-
         )
         self.__trigger_event__(self.SharesAllotted, shareholding=shareholding)
         return shareholding
@@ -59,7 +58,7 @@ class Company(AggregateRoot):
                 shareclass = ShareClass(
                     name=self.shareholding.share_class_name,
                     nominal_value=self.shareholding.nominal_value_per_share,
-                    currency=self.shareholding.currency
+                    currency=self.shareholding.currency,
                 )
                 obj._shareclasses[self.shareholding.share_class_name] = shareclass
             assert isinstance(shareclass, ShareClass)
@@ -67,7 +66,7 @@ class Company(AggregateRoot):
 
         @property
         def shareholding(self) -> "Shareholding":
-            return self.__dict__['shareholding']
+            return self.__dict__["shareholding"]
 
     def get_shareclass(self, share_class_name):
         return self._shareclasses.get(share_class_name)
@@ -101,7 +100,7 @@ class Shareholding(object):
         self.price_paid_per_share = price_paid_per_share
         self.currency = currency
         self.allotted_on = allotted_on
-        self.status = 'allotted'
+        self.status = "allotted"
 
 
 class ShareClass(object):

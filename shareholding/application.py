@@ -1,10 +1,10 @@
-from eventsourcing.application.sqlalchemy import SQLAlchemyApplication
+from eventsourcing.application.simple import SimpleApplication
 from eventsourcing.domain.model.aggregate import AggregateRoot
 
-from shareholding.domainmodel import Person, Company
+from shareholding.domainmodel import Company, Person
 
 
-class ShareholdingApplication(SQLAlchemyApplication):
+class ShareholdingApplication(SimpleApplication):
     persist_event_type = AggregateRoot.Event
 
     def register_person(self, name):
