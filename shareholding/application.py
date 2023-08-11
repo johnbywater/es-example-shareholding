@@ -1,18 +1,16 @@
-from eventsourcing.application.simple import SimpleApplication
-from eventsourcing.domain.model.aggregate import AggregateRoot
+from eventsourcing.application import Application
 
 from shareholding.domainmodel import Company, Person
 
 
-class ShareholdingApplication(SimpleApplication):
-    persist_event_type = AggregateRoot.Event
+class ShareholdingApplication(Application):
 
     def register_person(self, name):
-        person = Person.__create__(name=name)
-        person.__save__()
+        person = Person(name=name)
+        self.save(person)
         return person
 
     def register_company(self, name):
-        company = Company.__create__(name=name)
-        company.__save__()
+        company = Company(name=name)
+        self.save(company)
         return company

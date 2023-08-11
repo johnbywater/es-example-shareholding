@@ -1,1 +1,2 @@
-eventsourcing[sqlalchemy]==8.2.0
+eventsourcing==9.2.20
+eventsourcing_sqlalchemy==0.3

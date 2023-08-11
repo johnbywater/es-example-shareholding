@@ -1,12 +1,11 @@
 from decimal import Decimal
 from uuid import UUID
 
-from eventsourcing.domain.model.aggregate import AggregateRoot
+from eventsourcing.domain import Aggregate
 
 
-class Person(AggregateRoot):
-    def __init__(self, *, name, **kwargs):
-        super(Person, self).__init__(**kwargs)
+class Person(Aggregate):
+    def __init__(self, name):
         self._name = name
 
     @property
@@ -14,11 +13,8 @@ class Person(AggregateRoot):
         return self._name
 
 
-class Company(AggregateRoot):
-    __subclassevents__ = True
-
-    def __init__(self, *, name, **kwargs):
-        super(Company, self).__init__(**kwargs)
+class Company(Aggregate):
+    def __init__(self, name):
         self._shareclasses = {}
         self._name = name
 
@@ -47,10 +43,12 @@ class Company(AggregateRoot):
             currency=currency,
             allotted_on=allotted_on,
         )
-        self.__trigger_event__(self.SharesAllotted, shareholding=shareholding)
+        self.trigger_event(self.SharesAllotted, shareholding=shareholding)
         return shareholding
 
-    class SharesAllotted(AggregateRoot.Event):
+    class SharesAllotted(Aggregate.Event):
+        shareholding: "Shareholding"
+        
         def mutate(self, obj: "Company"):
             try:
                 shareclass = obj._shareclasses[self.shareholding.share_class_name]
@@ -63,10 +61,6 @@ class Company(AggregateRoot):
                 obj._shareclasses[self.shareholding.share_class_name] = shareclass
             assert isinstance(shareclass, ShareClass)
             shareclass.add_allotment(self.shareholding)
-
-        @property
-        def shareholding(self) -> "Shareholding":
-            return self.__dict__["shareholding"]
 
     def get_shareclass(self, share_class_name):
         return self._shareclasses.get(share_class_name)
